@@ -24,7 +24,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "your-secret-key-change-this"
-app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024  # 50MB max file size
+app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024 * 1024  # 10GB - essentially unlimited
 
 # Create necessary directories
 UPLOAD_FOLDER = "uploads"
@@ -75,8 +75,8 @@ def upload_files():
             return jsonify({"error": "No files selected"}), 400
 
         # Validate max size
-        if max_size_mb <= 0 or max_size_mb > 10:
-            return jsonify({"error": "Max size must be between 0.1 and 10 MB"}), 400
+        if max_size_mb <= 0:
+            return jsonify({"error": "Max size must be greater than 0"}), 400
 
         results = []
         reducer = ImageSizeReducer(max_file_size_mb=max_size_mb)
@@ -118,6 +118,10 @@ def upload_files():
         return jsonify({"results": results})
 
     except Exception as e:
+        import traceback
+
+        print(f"ERROR in upload_files: {str(e)}")
+        print(traceback.format_exc())
         return jsonify({"error": f"Server error: {str(e)}"}), 500
 
 

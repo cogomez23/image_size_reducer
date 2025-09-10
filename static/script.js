@@ -84,13 +84,13 @@ class ImageReducerApp {
 
     addFiles(files) {
         const imageFiles = files.filter(file => file.type.startsWith('image/'));
-        
+
         imageFiles.forEach(file => {
             // Check if file already exists
-            const exists = this.selectedFiles.some(f => 
+            const exists = this.selectedFiles.some(f =>
                 f.name === file.name && f.size === file.size
             );
-            
+
             if (!exists) {
                 this.selectedFiles.push(file);
             }
@@ -144,8 +144,8 @@ class ImageReducerApp {
         if (this.selectedFiles.length === 0) return;
 
         const maxSize = parseFloat(this.maxSizeInput.value);
-        if (isNaN(maxSize) || maxSize <= 0 || maxSize > 10) {
-            this.showError('Please enter a valid max size between 0.1 and 10 MB');
+        if (isNaN(maxSize) || maxSize <= 0) {
+            this.showError('Please enter a valid target size (must be greater than 0)');
             return;
         }
 
@@ -207,11 +207,11 @@ class ImageReducerApp {
 
     showResults(results) {
         this.processedResults = results;
-        
+
         // Calculate summary statistics
         const successful = results.filter(r => !r.error);
         const failed = results.filter(r => r.error);
-        
+
         const totalOriginalSize = successful.reduce((sum, r) => sum + r.original_size_mb, 0);
         const totalFinalSize = successful.reduce((sum, r) => sum + r.final_size_mb, 0);
         const totalReduction = totalOriginalSize > 0 ? ((totalOriginalSize - totalFinalSize) / totalOriginalSize) * 100 : 0;
@@ -350,18 +350,18 @@ class ImageReducerApp {
         const errorDiv = document.createElement('div');
         errorDiv.className = 'error-message';
         errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
-        
+
         // Insert after header
         const header = document.querySelector('.header');
         header.insertAdjacentElement('afterend', errorDiv);
-        
+
         // Auto-remove after 5 seconds
         setTimeout(() => {
             if (errorDiv.parentNode) {
                 errorDiv.parentNode.removeChild(errorDiv);
             }
         }, 5000);
-        
+
         // Scroll to error
         errorDiv.scrollIntoView({ behavior: 'smooth' });
     }
@@ -371,11 +371,11 @@ class ImageReducerApp {
         const successDiv = document.createElement('div');
         successDiv.className = 'success-message';
         successDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
-        
+
         // Insert after header
         const header = document.querySelector('.header');
         header.insertAdjacentElement('afterend', successDiv);
-        
+
         // Auto-remove after 3 seconds
         setTimeout(() => {
             if (successDiv.parentNode) {
